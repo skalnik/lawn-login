@@ -1,14 +1,41 @@
 require 'rubygems'
 require 'crypt/blowfish'
-if ARGV[0].nil?
-  puts "Please give a password to unencrypt the blowfish password."
-  exit
+require 'optparse'
+require 'yaml'
+
+options = Hash.new(false)
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: lawn [options]"
+  opts.on("-s", "--setup", "Re-run the interactive setup. For example, when LAWN password is changed.") do |opt|
+    options['setup'] = true
+  end
+  opts.on("-p", "--password", "Reset your LAWN password.") do |opt|
+    options['password'] = true
+  end
+end.parse!
+
+if !File.exists?("~/.lawn") or app['setup'] # First run or rerun setup.
+  info = Hash.new
+  
+  print "LAWN username? "
+  info['username'] = gets.chomp
+  print "LAWN password? "
+  unencrypted_password = gets.chomp
+  print "Encryption password? "
+  encryption_password = gets.chomp[0..55]
+  
+  blowfish = Crypt::Blowfish.new(encryption_password)
+    
+  info['encrypted_password'] = blowfish.encrypt_block(unencrypted_password)
+  unencrypted_password = nil
+  
+  File.open(File.expand_path('~/.lawn'), 'w') { |f|
+    f.write(YAML::dump(info))
+  }
 end
 
-USERNAME = "USERNAME HERE"
-ENCRYPTED_PASSWORD = "ENCRYPTED PASSWORD HERE"
-
-blowfish = Crypt::Blowfish.new(ARGV[0])
-password = blowfish.decrypt_block(ENCRYPTED_PASSWORD)
-puts `curl -s -f -F username=\'#{USERNAME}\' -F password=\'#{password}\' -F iss=\'true\' -F output=\'text\' https://auth.lawn.gatech.edu/index.php`
+#blowfish = Crypt::Blowfish.new(ARGV[0])
+#password = blowfish.decrypt_block(ENCRYPTED_PASSWORD)
+#puts `curl -s -f -F username=\'#{USERNAME}\' -F password=\'#{password}\' -F iss=\'true\' -F output=\'text\' https://auth.lawn.gatech.edu/index.php`
 
