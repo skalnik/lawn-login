@@ -1,32 +1,28 @@
 = lawn-login
 
-* FIX (url)
+* http://github.com/Oompa/lawn-login
 
 == DESCRIPTION:
 
-FIX (describe your package)
-
-== FEATURES/PROBLEMS:
-
-* FIX (list of features or problems)
+A small gem which provides a secure method of logging into the GATech LAWN network.
 
 == SYNOPSIS:
 
-  FIX (code sample of usage)
+  lawn <password>
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+* Crypt library
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+* sudo gem install lawn
 
 == LICENSE:
 
 (The MIT License)
 
-Copyright (c) 2008 FIX
+Copyright (c) 2008 Mike Skalnik
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

@@ -1,0 +1,14 @@
+require 'rubygems'
+require 'crypt/blowfish'
+if ARGV[0].nil?
+  puts "Please give a password to unencrypt the blowfish password."
+  exit
+end
+
+USERNAME = "USERNAME HERE"
+ENCRYPTED_PASSWORD = "ENCRYPTED PASSWORD HERE"
+
+blowfish = Crypt::Blowfish.new(ARGV[0])
+password = blowfish.decrypt_block(ENCRYPTED_PASSWORD)
+puts `curl -s -f -F username=\'#{USERNAME}\' -F password=\'#{password}\' -F iss=\'true\' -F output=\'text\' https://auth.lawn.gatech.edu/index.php`
+

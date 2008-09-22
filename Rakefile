@@ -1,12 +1,11 @@
-# -*- ruby -*-
-
 require 'rubygems'
 require 'hoe'
-require './lib/lawn-login.rb'
+require './lib/euler.rb'
 
-Hoe.new('lawn-login', Lawn-login::VERSION) do |p|
-  # p.rubyforge_name = 'lawn-loginx' # if different than lowercase project name
-  # p.developer('FIX', 'FIX@example.com')
+Hoe.new('euler', Euler::VERSION) do |p|
+  p.developer('Mike Skalnik', 'mike.skalnik@gmail.com')
+  p.remote_rdoc_dir = '' # Release to root
+  p.description = "A small gem which provides a secure method of logging into the GATech LAWN network."
+  p.summary = %q{A gem for easing the login to the GATech LAWN network.}
+  p.url = "http://github.com/Oompa/lawn-login"
 end
-
-# vim: syntax=Ruby
