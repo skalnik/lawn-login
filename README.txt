@@ -12,7 +12,7 @@ A small gem which provides a secure method of logging into the GATech LAWN netwo
 
 == REQUIREMENTS:
 
-* Crypt library
+* EZCrypto gem
 
 == INSTALL:
 

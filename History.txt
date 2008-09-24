@@ -1,3 +1,6 @@
+=== 0.0.5 / 2008-09-24
+ * Now using the ezcrypto library instead of Crypt
+ 
 === 0.0.4 / 2008-09-24
  * Separated some calls into new library.
 
