@@ -3,3 +3,4 @@ Manifest.txt
 README.txt
 Rakefile
 bin/lawn
+lib/lawn.rb

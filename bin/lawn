@@ -3,49 +3,44 @@ require 'rubygems'
 require 'crypt/blowfish'
 require 'optparse'
 require 'yaml'
+require '../lib/lawn'
 
 options = Hash.new(false)
 
 OptionParser.new do |opts|
   opts.banner = "Usage: lawn [options]"
   opts.on("-s", "--setup", "Re-run the interactive setup. For example, when LAWN password is changed.") do |opt|
-    options['setup'] = true
+    options[:setup] = true
   end
   opts.on("-p", "--password", "Reset your LAWN password.") do |opt|
-    options['password'] = true
+    options[:password] = true
   end
 end.parse!
 
 file = File.expand_path('~/.lawn')
 info = Hash.new
 
-if !File.exists?(file) or options['setup'] # First run or rerun setup.  
+if !File.exists?(file) or options[:setup] # First run or rerun setup.  
   print "LAWN username? "
   info[:username] = gets.chomp
   print "LAWN password? "
-  unencrypted_password = gets.chomp
-  
-  blowfish = Crypt::Blowfish.new(info[:username])
-    
-  info[:encrypted_password] = blowfish.encrypt_block(unencrypted_password)
-  unencrypted_password = nil
-  
-  if info[:username].length < 7
-    info[:encryption_password] = info[:username] << ("!" * 7)
-  else
-    info[:encryption_password] = info[:username]
-  end
+  info[:encrypted_password] = Lawn.encrypt_password(Lawn.get_encryption_password(info[:username]), gets.chomp)
   
   File.open(file, 'w') { |f|
     f.write(YAML::dump(info))
   }
-  puts "OK. Lawn-login is now setup. To login next time, run `lawn <encryption_password>`"
+  puts "OK. Lawn-login is now setup. To login next time, run `lawn`"
   exit
 else # File exists, so lets get the info from there!
   info = YAML.load_file(file)
 end
 
-blowfish = Crypt::Blowfish.new(info[:encryption_password])
+if options[:password]
+  print "New LAWN password? "
+  info[:encrypted_password] = Lawn.encrypt_password(Lawn.get_encryption_password(info[:username]), gets.chomp)
+end
+
+blowfish = Crypt::Blowfish.new(Lawn.get_encryption_password(info[:username]))
 PASSWORD = blowfish.decrypt_block(info[:encrypted_password])
 USERNAME = info[:username]
 
