@@ -1,3 +1,4 @@
+#!/usr/bin/ruby
 require 'rubygems'
 require 'crypt/blowfish'
 require 'optparse'
@@ -16,21 +17,24 @@ OptionParser.new do |opts|
 end.parse!
 
 file = File.expand_path('~/.lawn')
+info = Hash.new
 
-if !File.exists?(file) or app['setup'] # First run or rerun setup.
-  info = Hash.new
-  
+if !File.exists?(file) or options['setup'] # First run or rerun setup.  
   print "LAWN username? "
   info[:username] = gets.chomp
   print "LAWN password? "
   unencrypted_password = gets.chomp
-  print "Encryption password? "
-  encryption_password = gets.chomp[0..55]
   
-  blowfish = Crypt::Blowfish.new(encryption_password)
+  blowfish = Crypt::Blowfish.new(info[:username])
     
   info[:encrypted_password] = blowfish.encrypt_block(unencrypted_password)
   unencrypted_password = nil
+  
+  if info[:username].length < 7
+    info[:encryption_password] = info[:username] << ("!" * 7)
+  else
+    info[:encryption_password] = info[:username]
+  end
   
   File.open(file, 'w') { |f|
     f.write(YAML::dump(info))
@@ -41,13 +45,8 @@ else # File exists, so lets get the info from there!
   info = YAML.load_file(file)
 end
 
-if ARGV[0].nil?
-  puts "No password given. Please give encryption password."
-  exit
-end
-
-blowfish = Crypt::Blowfish.new(ARGV[0])
+blowfish = Crypt::Blowfish.new(info[:encryption_password])
 PASSWORD = blowfish.decrypt_block(info[:encrypted_password])
 USERNAME = info[:username]
 
-puts `curl -s -f -F username=\'#{USERNAME}\' -F password=\'#{password}\' -F iss=\'false\' -F output=\'text\' https://auth.lawn.gatech.edu/index.php`
+puts `curl -s -f -F username=\'#{USERNAME}\' -F password=\'#{PASSWORD}\' -F iss=\'false\' -F output=\'text\' https://auth.lawn.gatech.edu/index.php`

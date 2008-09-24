@@ -1,8 +1,7 @@
 require 'rubygems'
 require 'hoe'
-require 'lib/lawn-login.rb'
 
-Hoe.new('lawn-login', 0.0.2) do |p|
+Hoe.new('lawn-login', "0.0.3") do |p|
   p.developer('Mike Skalnik', 'mike.skalnik@gmail.com')
   p.remote_rdoc_dir = '' # Release to root
   p.description = "A small gem which provides a secure method of logging into the GATech LAWN network."
