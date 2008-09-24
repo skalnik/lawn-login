@@ -2,7 +2,7 @@ require 'rubygems'
 require 'ezcrypto'
 module Lawn
   extend self
-  VERSION = "0.0.5"
+  VERSION = "0.0.6"
   
   def get_encryption_password(username)
     if username.length < 7

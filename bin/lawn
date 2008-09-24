@@ -3,7 +3,7 @@ require 'rubygems'
 require 'ezcrypto'
 require 'optparse'
 require 'yaml'
-require '../lib/lawn'
+require 'lawn'
 
 options = Hash.new(false)
 
