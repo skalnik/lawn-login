@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 require 'rubygems'
-require 'crypt/blowfish'
+require 'ezcrypto'
 require 'optparse'
 require 'yaml'
 require '../lib/lawn'
@@ -29,19 +29,22 @@ if !File.exists?(file) or options[:setup] # First run or rerun setup.
   File.open(file, 'w') { |f|
     f.write(YAML::dump(info))
   }
-  puts "OK. Lawn-login is now setup. To login next time, run `lawn`"
-  exit
+  puts "OK. Lawn-login is now setup, now attempting to login for the first time. To login next time, run `lawn`."
 else # File exists, so lets get the info from there!
   info = YAML.load_file(file)
 end
 
 if options[:password]
+  puts info[:encrypted_password]
   print "New LAWN password? "
-  info[:encrypted_password] = Lawn.encrypt_password(Lawn.get_encryption_password(info[:username]), gets.chomp)
+  puts info[:encrypted_password] = Lawn.encrypt_password(Lawn::get_encryption_password(info[:username]), gets.chomp)
+  
+  File.open(file, 'w') { |f|
+    f.write(YAML::dump(info))
+  }
 end
 
-blowfish = Crypt::Blowfish.new(Lawn.get_encryption_password(info[:username]))
-PASSWORD = blowfish.decrypt_block(info[:encrypted_password])
-USERNAME = info[:username]
 
+PASSWORD = Lawn.decrypt_password(Lawn.get_encryption_password(info[:username]), info[:encrypted_password])
+USERNAME = info[:username]
 puts `curl -s -f -F username=\'#{USERNAME}\' -F password=\'#{PASSWORD}\' -F iss=\'false\' -F output=\'text\' https://auth.lawn.gatech.edu/index.php`
