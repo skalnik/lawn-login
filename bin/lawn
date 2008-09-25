@@ -37,7 +37,7 @@ end
 if options[:password]
   puts info[:encrypted_password]
   print "New LAWN password? "
-  puts info[:encrypted_password] = Lawn.encrypt_password(Lawn::get_encryption_password(info[:username]), gets.chomp)
+  puts info[:encrypted_password] = Lawn.encrypt_password(Lawn.get_encryption_password(info[:username]), gets.chomp)
   
   File.open(file, 'w') { |f|
     f.write(YAML::dump(info))

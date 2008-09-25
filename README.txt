@@ -6,10 +6,6 @@
 
 A small gem which provides a secure method of logging into the GATech LAWN network.
 
-== SYNOPSIS:
-
-  lawn <password>
-
 == REQUIREMENTS:
 
 * EZCrypto gem
