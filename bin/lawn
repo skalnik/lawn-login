@@ -47,4 +47,9 @@ end
 
 PASSWORD = Lawn.decrypt_password(Lawn.get_encryption_password(info[:username]), info[:encrypted_password])
 USERNAME = info[:username]
-puts `curl -s -f -F username=\'#{USERNAME}\' -F password=\'#{PASSWORD}\' -F iss=\'false\' -F output=\'text\' https://auth.lawn.gatech.edu/index.php`
+result = Lawn.login(USERNAME, PASSWORD)
+if result == 1
+  puts "Logged in successfully."
+else
+  puts "An error occured, e.g. you're already logged in."
+end
